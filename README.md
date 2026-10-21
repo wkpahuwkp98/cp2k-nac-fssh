@@ -32,10 +32,43 @@
 ├── FSSH.md       # 教程正文（主文档）
 ├── LICENSE       # CC BY 4.0 许可全文
 ├── fig/          # 正文插图（image1.png … image17.png）
-└── .gitignore    # 排除本地 PDF 参考资料
+├── cp2k/         # CP2K 高斯基 NAC 计算脚本与输入模板
+└── .gitignore    # 排除本地 PDF 参考资料、Python 缓存与运行产物
 ```
 
 > 说明：原始 PDF 文献仅作为本地写作参考，未纳入仓库；如需阅读请自行从期刊获取。
+
+## CP2K 高斯基 NAC 脚本
+
+`cp2k/` 目录是正文 §2 方法的一个可运行实现：把 NAC 从平面波（VASP / PYXAID）搬到高斯基组（CP2K）。核心是给 overlap 矩阵夹上 AO 重叠：
+
+$$\langle \psi_i(t) \mid \psi_j(t+\Delta t) \rangle = C_i^\dagger S_{\text{cross}} C_j$$
+
+| 文件 | 作用 |
+| --- | --- |
+| `cp2k_gaussian_nac_parallel.py` | 高斯基 time-overlap NAC 主程序，含 V/C 分块 gauge 搬运、MO 相位对齐、活性窗检查 |
+| `cp2k_nac_parallel.sh` | SLURM 驱动脚本，逐帧对提交作业并缓存结果 |
+| `input.inp` | CP2K 模板输入（`RUN_TYPE ENERGY`，通过 `&PRINT / &AO_MATRICES` 输出 AO 重叠矩阵供脚本解析） |
+
+**依赖**：Python 3 + NumPy；CP2K 需开启 `&AO_MATRICES` 打印重叠矩阵。
+
+**自检**（验证基组、赝势、MO 重叠与相位对齐是否正确）：
+
+```bash
+python cp2k_gaussian_nac_parallel.py selftest --xyz frame.extxyz --frame 0 \
+    --basis gth-dzvp-molopt-sr --pseudo gth-pbe --xc pbe
+```
+
+**批量计算**：
+
+```bash
+python cp2k_gaussian_nac_parallel.py nac --xyz frame.extxyz --frame-t 0 --frame-tdt 1 \
+    --dt 1.0 --bmin 160 --bmax 200 --basis gth-dzvp-molopt-sr --pseudo gth-pbe --xc pbe
+
+sbatch cp2k_nac_parallel.sh
+```
+
+> `cp2k_nac_parallel.sh` 顶部的 `FRAMES_DIR`、`SBATCH` 分区名、模块加载与环境变量均为作者所在集群的配置，使用前请替换为你自己的；`BMIN/BMAX` 是活性空间窗口，需覆盖占据前沿（HOMO±5 是常用起点）。
 
 ## 阅读方式
 

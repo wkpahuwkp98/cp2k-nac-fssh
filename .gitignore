@@ -15,3 +15,14 @@ desktop.ini
 ~$*.docx
 ~$*.pptx
 *.tmp
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# 脚本运行时产物
+.nac_notes/
+pair_cache/
+*.extxyz
