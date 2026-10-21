@@ -1,0 +1,60 @@
+cp2k_gaussian_nac_parallel.py
+=============================
+
+本文件包含改编自 nano-qmflows 的代码。以下为原始项目的版权与许可信息，
+以及本仓库所作的修改说明。
+
+原始项目
+--------
+  nano-qmflows
+  https://github.com/SCM-NV/nano-qmflows
+  版本: 0.14.2
+
+  Copyright 2022 Netherlands eScience Center, Vrije Universiteit Amsterdam
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  除非适用法律要求或书面同意，依据该许可证分发的软件按"原样"提供，
+  不附带任何明示或默示的担保。具体条款见许可证原文。
+
+涉及的部分
+----------
+下列函数改编自 nano-qmflows 的对应实现（括号内为原函数名）：
+
+  nq_couplings_3points          (calculate_couplings_3points)
+  nq_couplings_levine           (calculate_couplings_levine)
+  nq_compute_phases             (compute_phases)
+  nq_correct_phases             (correct_phases)
+  nq_track_unavoided_crossings  (track_unavoided_crossings)
+  cmd_hvib                      (workflow_derivative_couplings 的后半段)
+  write_pyxaid_ham_v3           (write_hamiltonians)
+
+所作修改
+--------
+1. 重叠矩阵的获取方式。原实现通过 libint 对非周期分子体系直接计算 MO 重叠；
+   本仓库改为读取 CP2K 输出的 AO 重叠矩阵，按
+
+       <psi_i(t) | psi_j(t+dt)> = C_i^dagger * S_cross * C_j
+
+   构造跨时重叠 S_cross，从而支持周期性体系与变胞（cell 随帧变化）情形。
+
+2. 依赖裁剪。移除了对 libint、qmflows 运行时及 PySCF 工作流调度层的依赖，
+   上述函数改为纯 NumPy / SciPy 实现，可独立调用。
+
+3. 接口与数值约定。函数签名改为显式传入 S_cross 与时间步长；能量单位统一为 eV，
+   NAC 按 hbar * NAC 写入 Ham_*_im；新增活性空间窗口检查、V/C 分块 gauge 搬运
+   与 MO 相位链修正的封装。
+
+4. 输出格式。write_pyxaid_ham_v3 在原 write_hamiltonians 的基础上增加了
+   pair 索引、metadata 与 V/C 分块诊断量。
+
+许可
+----
+本目录代码整体按 Apache License, Version 2.0 分发，全文见同目录 LICENSE。
+
+仓库中的文档部分（README.md、FSSH.md、fig/）采用 CC BY 4.0，
+见仓库根目录 LICENSE。

@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
+# Copyright 2026 wkpahuwkp98
+# 本文件包含改编自 nano-qmflows 的代码
+# Copyright 2022 Netherlands eScience Center, Vrije Universiteit Amsterdam
+# https://github.com/SCM-NV/nano-qmflows
+# Licensed under the Apache License, Version 2.0
+# 许可全文见同目录 LICENSE，涉及范围与修改说明见同目录 NOTICE
 
 """
 cp2k_gaussian_nac_parallel.py

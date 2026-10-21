@@ -30,9 +30,14 @@
 .
 ├── README.md     # 本文件
 ├── FSSH.md       # 教程正文（主文档）
-├── LICENSE       # CC BY 4.0 许可全文
+├── LICENSE       # 文档的 CC BY 4.0 许可全文
 ├── fig/          # 正文插图（image1.png … image17.png）
 ├── cp2k/         # CP2K 高斯基 NAC 计算脚本与输入模板
+│   ├── cp2k_gaussian_nac_parallel.py
+│   ├── cp2k_nac_parallel.sh
+│   ├── input.inp
+│   ├── LICENSE   # 代码的 Apache-2.0 许可全文
+│   └── NOTICE    # 第三方来源与修改说明（nano-qmflows）
 └── .gitignore    # 排除本地 PDF 参考资料、Python 缓存与运行产物
 ```
 
@@ -51,6 +56,8 @@ $$\langle \psi_i(t) \mid \psi_j(t+\Delta t) \rangle = C_i^\dagger S_{\text{cross
 | `input.inp` | CP2K 模板输入（`RUN_TYPE ENERGY`，通过 `&PRINT / &AO_MATRICES` 输出 AO 重叠矩阵供脚本解析） |
 
 **依赖**：Python 3 + NumPy；CP2K 需开启 `&AO_MATRICES` 打印重叠矩阵。
+
+> 主程序中 NAC→Hvib 的处理链改编自 [nano-qmflows](https://github.com/SCM-NV/nano-qmflows)（Apache-2.0）。涉及哪些函数、作了哪些修改，见 [`cp2k/NOTICE`](cp2k/NOTICE)。
 
 **自检**（验证基组、赝势、MO 重叠与相位对齐是否正确）：
 
@@ -85,11 +92,14 @@ git clone <本仓库地址>
 
 ## 许可
 
-本仓库的文档内容（`FSSH.md` 及全部插图）采用 **[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.zh-hans)**（署名 4.0 国际）协议授权，许可全文见 [LICENSE](LICENSE)。
+本仓库按内容类型分别授权：
 
-© 2026 wkpahuwkp98
+| 范围 | 协议 | 全文 |
+| --- | --- | --- |
+| 文档：`README.md`、`FSSH.md`、`fig/` | CC BY 4.0 | [LICENSE](LICENSE) |
+| 代码：`cp2k/` | Apache-2.0 | [cp2k/LICENSE](cp2k/LICENSE) |
 
-你可以自由地**共享**（以任何媒介或格式复制、发行）与**演绎**（修改、转换、再创作），包括商业用途，但须遵守：
+**文档部分** © 2026 wkpahuwkp98，采用 **[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.zh-hans)**（署名 4.0 国际）。你可以自由地**共享**（以任何媒介或格式复制、发行）与**演绎**（修改、转换、再创作），包括商业用途，但须遵守：
 
 - **署名**：注明作者 `wkpahuwkp98`、给出本仓库链接，并标明是否作了修改
 - **不得增加限制**：不得对他人施加法律条款或技术措施，限制他人行使许可协议允许的权利
@@ -98,4 +108,4 @@ git clone <本仓库地址>
 
 > wkpahuwkp98. 非绝热载流子动力学理论计算方法[EB/OL]. GitHub, 2026. https://github.com/wkpahuwkp98/fssh-tutorial
 
-若后续在本仓库中加入代码，代码部分建议另行采用 MIT 许可。
+**代码部分**采用 Apache-2.0，原因是 `cp2k/cp2k_gaussian_nac_parallel.py` 中 NAC→Hvib 的处理链改编自 [nano-qmflows](https://github.com/SCM-NV/nano-qmflows)（Copyright 2022 Netherlands eScience Center, Vrije Universiteit Amsterdam，Apache-2.0）。上游要求保留版权声明、附许可全文并声明修改，这些义务分别由 `cp2k/LICENSE`、`cp2k/NOTICE` 与文件头的许可声明承担。

@@ -1,6 +1,6 @@
 #!/bin/sh
 #SBATCH -J cp2k_nac
-#SBATCH -p q_ysuan
+#SBATCH -p your_partition
 #SBATCH -o job_%j.log
 #SBATCH -n 36
 # ============================================================
@@ -11,13 +11,13 @@ rm -rf .nac_notes
 NAC_PAIR_CACHE_ROOT="${NAC_PAIR_CACHE_ROOT:-$PWD/pair_cache}"
 mkdir -p "$NAC_PAIR_CACHE_ROOT"
 echo "host $(hostname)  time $(date)  dir $PWD  nodes $SLURM_JOB_NODELIST"
-source ~/yeesuan/envs/cp2k_env.sh
+# 加载你自己集群的 cp2k 环境(如 module load cp2k, 或 source 你的环境脚本)
 export OMP_NUM_THREADS=1                   
 # ============================ 可配置区 ============================
 PYTHON_BIN="python"
 NAC_PY="./cp2k_gaussian_nac_parallel.py"
 TEMPLATE="./input.inp"                     # cp2k
-FRAMES_DIR="/sh3/ysuanbase/home/yeesuan18026/kp/phase_transfer/FAPbI3/tps/unitcell/real_phase_transfer/FAPbI3_NPH_TPS_STAGED_READY_V2/bootstrap/full25_nph_CF1v2/shot018/pfiles"      # 放帧文件目录
+FRAMES_DIR="./frames"                      # vasp 的 poscar 文件所在目录
 FRAME_NAME_FMT="p%05d"           # 帧文件命名格式
 PROJECT="PROJECT"                          # 必须和 input.inp 里 &GLOBAL PROJECT 一样
 FRAME_START=7001                              # 起始帧
