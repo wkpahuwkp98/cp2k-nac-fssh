@@ -1,0 +1,17 @@
+# 本地参考资料，不随仓库发布
+*.pdf
+*.PDF
+
+# 系统 / 编辑器临时文件
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+~$*
+
+# Office / 导出中间产物
+~$*.docx
+~$*.pptx
+*.tmp
