@@ -6,7 +6,7 @@
 
 ## 内容概览
 
-正文见 **[FSSH_reformatted.md](FSSH_reformatted.md)**（GitHub 上可直接渲染，含公式与插图）。
+正文见 **[FSSH.md](FSSH.md)**（GitHub 上可直接渲染，含公式与插图）。
 
 | 章节 | 内容 | 建议 |
 | --- | --- | --- |
@@ -28,17 +28,18 @@
 
 ```
 .
-├── README.md              # 本文件
-├── FSSH_reformatted.md    # 教程正文（主文档）
+├── README.md                 # 本文件
+├── FSSH.md                   # 教程正文（主文档）
+├── LICENSE                   # CC BY 4.0 许可全文
 ├── image1.png … image17.png  # 正文插图，按相对路径被引用
-└── .gitignore             # 排除本地 PDF 参考资料
+└── .gitignore                # 排除本地 PDF 参考资料
 ```
 
 > 说明：原始 PDF 文献仅作为本地写作参考，未纳入仓库；如需阅读请自行从期刊获取。
 
 ## 阅读方式
 
-- **在线**：直接点开 [FSSH_reformatted.md](FSSH_reformatted.md)。GitHub 支持 LaTeX 公式渲染，但复杂公式偶有排版偏差。
+- **在线**：直接点开 [FSSH.md](FSSH.md)。GitHub 支持 LaTeX 公式渲染，但复杂公式偶有排版偏差。
 - **本地（推荐，公式排版最稳）**：用支持 MathJax/KaTeX 的编辑器打开，例如 VS Code + Markdown Preview Enhanced、Typora、Obsidian。
 
 ```bash
@@ -51,4 +52,17 @@ git clone <本仓库地址>
 
 ## 许可
 
-尚未选定。文档类内容建议 CC BY 4.0，若后续加入代码则代码部分建议 MIT。
+本仓库的文档内容（`FSSH.md` 及全部插图）采用 **[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.zh-hans)**（署名 4.0 国际）协议授权，许可全文见 [LICENSE](LICENSE)。
+
+© 2026 wkpahuwkp98
+
+你可以自由地**共享**（以任何媒介或格式复制、发行）与**演绎**（修改、转换、再创作），包括商业用途，但须遵守：
+
+- **署名**：注明作者 `wkpahuwkp98`、给出本仓库链接，并标明是否作了修改
+- **不得增加限制**：不得对他人施加法律条款或技术措施，限制他人行使许可协议允许的权利
+
+建议引用格式：
+
+> wkpahuwkp98. 非绝热载流子动力学理论计算方法[EB/OL]. GitHub, 2026. https://github.com/wkpahuwkp98/fssh-tutorial
+
+若后续在本仓库中加入代码，代码部分建议另行采用 MIT 许可。
