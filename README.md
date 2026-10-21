@@ -28,11 +28,11 @@
 
 ```
 .
-├── README.md                 # 本文件
-├── FSSH.md                   # 教程正文（主文档）
-├── LICENSE                   # CC BY 4.0 许可全文
-├── image1.png … image17.png  # 正文插图，按相对路径被引用
-└── .gitignore                # 排除本地 PDF 参考资料
+├── README.md     # 本文件
+├── FSSH.md       # 教程正文（主文档）
+├── LICENSE       # CC BY 4.0 许可全文
+├── fig/          # 正文插图（image1.png … image17.png）
+└── .gitignore    # 排除本地 PDF 参考资料
 ```
 
 > 说明：原始 PDF 文献仅作为本地写作参考，未纳入仓库；如需阅读请自行从期刊获取。

@@ -316,7 +316,7 @@ $$
     - 左乘 $\langle \phi_k |$,上式为 $V_{kj} = \langle \phi_k | E_j | \phi_j \rangle = E_j \langle \phi_k | \phi_j \rangle = E_j \delta_{kj}$;当 $k \neq j$ 时 $\delta_{kj}=0$,即所有非对角元为 0。
     - 因此,在绝热表象下,这一项的非对角部分为 0。
 
-    ![alt text](image2.png)
+    ![alt text](fig/image2.png)
 
     如图所示的 `0_Ham_re` 文件,对角项为 KS 轨道的本征能量,非对角项为 0。
 
@@ -376,7 +376,7 @@ $$
 >
 > 因此当 $k=j$ 时 $d_{kk} = -d_{kk}^*$,即 $d_{kk}$ 为纯虚数;在实基(Γ 点等情形)下 $d_{kk}=0$。
 >
-> ![alt text](image3.png)
+> ![alt text](fig/image3.png)
 >
 > 如图所示的 `0_Ham_im` 文件,对角项为 0,非对角项为非绝热耦合项,且 $(k,j)$ 与 $(j,k)$ 两个非对角元在实基下互为相反数。
 
@@ -525,7 +525,7 @@ $$
 2. 允许第 $k$ 个电子态跳跃至其他态 $l$,并且 $k$ 跳跃至不同 $l$ 是独立的,不允许往返跳跃,以保证跳跃次数最少。
 3. 当轨迹足够多时,原子核在 $t$ 时刻处在 $k$ 电子态的比例应等于 $a_{kk}$。
 
-![alt text](image4.png)
+![alt text](fig/image4.png)
 
 #### 6.1 N 条轨迹
 
@@ -1088,7 +1088,7 @@ $$
 
 至此,基本的非绝热载流子动力学理论方法我们就推导完毕了。尽管 FSSH 依然是"经典 + 量子"处理载流子跃迁(例如使用随机数判断是否发生跃迁、对动量进行调整),并且最小面跳跃会将跃迁简化,无法严格满足量子理论对布居数、动量和退相干的一致性条件,但它也是目前能够使用的较为方便的计算载流子寿命的方法。后续会介绍的**泊松化量子动力学**则使量子动力学遵循严格的数学推导并重现量子系统信息,在不讨论原子核量子化的情况下,提供了一种严格量子一致、物理图像清晰、跃迁统计可控的非绝热动力学路径采样框架。
 
-![alt text](image5.png)
+![alt text](fig/image5.png)
 
 如图所示:
 
@@ -1101,11 +1101,11 @@ $$
 
 PYXAID 主要编写为 C++,通过 Python 字典传递参数。
 
-![alt text](image6.png)
+![alt text](fig/image6.png)
 
 上面这段参数主要读取哈密顿量文件以及其单位。这里设置成 Ry 是因为在从 real 文件转换成哈密顿量文件的时候进行了单位转换;哈密顿量文件实部(`0_Ham_xx_re`)中保存的对角元就是 KS 轨道的能量,单位为 Ry。`Hprime` 则对应跃迁偶极矩,如果包含激光激发则需要使用,这里不涉及。
 
-![alt text](image7.png)
+![alt text](fig/image7.png)
 
 ```python
 params["runtype"] = "namd"
@@ -1117,7 +1117,7 @@ params["is_field"] = 0
 - `params["decoherence"] = 1`:是否使用 DISH 方法校正。设置为 `0` 表示标准 FSSH,不包含退相干,此时只有时间演化算符 $\hat{U}$ 演化,没有退相干算符 $\hat{L}$ 介入;设置为 `1` 表示开启 DISH 计算,此时会计算退相干时间,并引入退相干算符 $\hat{L}$。
 - `params["is_field"] = 0`:是否包含光场激发。`0` 不包含,`1` 包含;如果包含,则会在玻尔兹曼因子分母上引入一个光子能量。
 
-![alt text](image8.png)
+![alt text](fig/image8.png)
 
 ```python
 params["elec_dt"] = 1.0
@@ -1129,7 +1129,7 @@ params["integrator"] = 0
 - `params["nucl_dt"]`:核积分的时间步长,必须和哈密顿量文件产生时的时间步长保持一致。
 - `params["integrator"]`:用什么方法计算积分。
 
-![alt text](image9.png)
+![alt text](fig/image9.png)
 
 ```python
 params["namdtime"] = 5000000
@@ -1147,11 +1147,11 @@ params["alp_bet"] = 0
 - `params["Temp"] = 300.0`:使用玻尔兹曼因子缩放时的温度。
 - `params["alp_bet"] = 0`:是否考虑自旋耦合,后续再补。
 
-![alt text](image10.png)
+![alt text](fig/image10.png)
 
 上图均为设置的光场参数,暂不考虑。
 
-![alt text](image11.png)
+![alt text](fig/image11.png)
 
 ```python
 params["active_space"] = [6, 7]
@@ -1163,11 +1163,11 @@ params["states"].append(["S1", [7], 0.00])
 - `params["states"].append(["GS", [6], 0.00])`:基态轨道为 6,最后一个浮点数可以作为剪刀算子将轨道能量升高或者降低(例如设置 `1` 代表将第 6 号轨道能量增加 1 eV,设置 `-1` 为降低 1 eV),一般在拟合实验带隙时使用。
 - `params["states"].append(["S1", [7], 0.00])`:激发态轨道为 7,其他同理。
 
-![alt text](image12.png)
+![alt text](fig/image12.png)
 
 有时也可以写作上面的形式,这时一般考虑的是载流子弛豫而非复合,表示从第 150 个 KS 轨道一直向下演化到第 100 个轨道。
 
-![alt text](image13.png)
+![alt text](fig/image13.png)
 
 上图为如何生成初始条件。
 
@@ -1175,7 +1175,7 @@ params["states"].append(["S1", [7], 0.00])
 - `j = nmicrost - 1` 表示最后一个电子态的索引,这里给的例子仅有 0 和 1 两个态,因此 `j` 被设置为 1,表示最高激发态。
 - `ic.append([3*i, j])` 表示间隔多少步选择核的位置和动量作为 $t = 0$ 时刻;如果没有间隔,那么相邻两条轨迹的原子核构型太过相似,统计相关性太高。间隔选取 3(0, 3, 6, 9, ……)是为了让轨迹的初始构型有足够差异。
 
-![alt text](image14.png)
+![alt text](fig/image14.png)
 
 上图为计算结束输出的载流子寿命:
 
@@ -1184,7 +1184,7 @@ params["states"].append(["S1", [7], 0.00])
 
 二者没有固定大小关系。`se_en_ex1` 和 `sh_en_ex1` 则是能量演变。
 
-![alt text](image15.png)
+![alt text](fig/image15.png)
 
 上图就为两种方式计算出的能量演变。
 
@@ -1280,7 +1280,7 @@ VASP 在每个离子步独立对角化哈密顿量,每次得到的相位 $\theta
 
 因此,如果不进行相位修正,计算出的不同相位会导致非绝热耦合失去物理意义:实部偏离真值,且出现了本不应该出现的虚部数值噪声。
 
-![alt text](image16.png)
+![alt text](fig/image16.png)
 
 脚本先将 $t=0$ 时刻的波函数 $\psi_{\text{ref}}(0)$ 存储起来,其中包含了随机相位因子 $e^{i\alpha}$,因此:
 
@@ -1304,7 +1304,7 @@ C &= \langle \psi_{\text{ref}} | \psi_{\text{now}}(t) \rangle \\
 \end{aligned} \tag{78}
 $$
 
-![alt text](image17.png)
+![alt text](fig/image17.png)
 
 上式即为代码计算中对所有元素相乘并求和:
 
@@ -1380,7 +1380,7 @@ $$
 
 表示在 $t$ 时刻发现粒子处于 $a$ 和 $b$ 之间的几率。
 
-![alt text](image1.png)
+![alt text](fig/image1.png)
 
 #### 1.3 归一化条件
 
