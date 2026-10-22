@@ -4,6 +4,10 @@
 
 本仓库是一份**学习型笔记 / 教程**，目标是把"面跳跃 + 非绝热分子动力学"这条链路从第一性原理一路推到能真正跑起来的 PYXAID 计算：公式尽量给全、每一步推导的动机都写清楚、数值实现中容易踩的坑（尤其是相位随机性问题）单独成章。
 
+> **无法访问 GitHub？**
+> 本文档在 **[allergicrosen.xyz/p/fssh](https://allergicrosen.xyz/p/fssh/)** 提供镜像站，内容与本仓库同步，国内网络可直接打开，无需任何代理。
+> 镜像站适合在线阅读；需要克隆代码或提 Issue 时仍请使用 GitHub。
+
 ## 内容概览
 
 正文见 **[FSSH.md](FSSH.md)**（GitHub 上可直接渲染，含公式与插图）。
@@ -79,7 +83,8 @@ sbatch cp2k_nac_parallel.sh
 
 ## 阅读方式
 
-- **在线**：直接点开 [FSSH.md](FSSH.md)。GitHub 支持 LaTeX 公式渲染，但复杂公式偶有排版偏差。
+- **在线（国内推荐）**：镜像站 [allergicrosen.xyz/p/fssh](https://allergicrosen.xyz/p/fssh/)，无需代理即可访问，网页排版针对阅读做过优化。
+- **在线（GitHub）**：直接点开 [FSSH.md](FSSH.md)。GitHub 支持 LaTeX 公式渲染，但复杂公式偶有排版偏差。
 - **本地（推荐，公式排版最稳）**：用支持 MathJax/KaTeX 的编辑器打开，例如 VS Code + Markdown Preview Enhanced、Typora、Obsidian。
 
 ```bash
