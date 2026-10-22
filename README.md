@@ -1,8 +1,13 @@
 # 非绝热载流子动力学理论计算方法
 
-> 一份从 Tully 最小面跳跃（FSSH）推导到 PYXAID 实操参数的中文教程，覆盖 KS 轨道近似、经典路径近似（CPA）、DISH 退相干修正与 VASP 相位修正。
+> 一份从 Tully 最小面跳跃（FSSH）推导到 PYXAID / CP2K 实操参数的中文教程，覆盖 KS 轨道近似、经典路径近似（CPA）、DISH 退相干修正与 VASP 相位修正；并附一套**支持变胞（晶胞随轨迹变化）的 CP2K 高斯基 NAC 实现**。
 
 本仓库是一份**学习型笔记 / 教程**，目标是把"面跳跃 + 非绝热分子动力学"这条链路从第一性原理一路推到能真正跑起来的 PYXAID 计算：公式尽量给全、每一步推导的动机都写清楚、数值实现中容易踩的坑（尤其是相位随机性问题）单独成章。
+
+> **为什么变胞 NAC 要用 CP2K？**
+> 晶胞随轨迹变化时，平面波基组（VASP、Quantum ESPRESSO 等）的基函数数目会随晶胞改变——同一个截断能下能容纳的平面波数不同，相邻两帧波函数的维数就对不上，**内积无定义，NAC 算不出来**。
+> 高斯基与数值原子轨道（CP2K、OpenMX、ABACUS、FHI-aims）的基函数挂在原子上，数目只由原子与基组决定、与晶胞无关，所以两帧之间可以正常做重叠积分。
+> 代价是要处理 S 矩阵、cross-time 重叠与相位三个问题，详见 **[cp2k/variable-cell-nac.md](cp2k/variable-cell-nac.md)**。
 
 > **无法访问 GitHub？**
 > 本文档在 **[allergicrosen.xyz/p/fssh](https://allergicrosen.xyz/p/fssh/)** 提供镜像站，内容与本仓库同步，国内网络可直接打开，无需任何代理。
@@ -40,6 +45,7 @@
 │   ├── cp2k_gaussian_nac_parallel.py
 │   ├── cp2k_nac_parallel.sh
 │   ├── input.inp
+│   ├── variable-cell-nac.md  # 变胞 NAC 的原理与实现要点
 │   ├── LICENSE   # 代码的 Apache-2.0 许可全文
 │   └── NOTICE    # 第三方来源与修改说明（nano-qmflows）
 └── .gitignore    # 排除本地 PDF 参考资料、Python 缓存与运行产物
@@ -47,17 +53,22 @@
 
 > 说明：原始 PDF 文献仅作为本地写作参考，未纳入仓库；如需阅读请自行从期刊获取。
 
-## CP2K 高斯基 NAC 脚本
+## CP2K 高斯基 NAC 脚本（支持变胞）
 
-`cp2k/` 目录是正文 §2 方法的一个可运行实现：把 NAC 从平面波（VASP / PYXAID）搬到高斯基组（CP2K）。核心是给 overlap 矩阵夹上 AO 重叠：
+`cp2k/` 目录是正文 §2 方法的一个可运行实现：把 NAC 从平面波（VASP / PYXAID）搬到高斯基组（CP2K）。**这是本仓库相对其他 FSSH 教程的主要差异点——它能在晶胞随轨迹变化的体系（相变、变胞 MD、NPT 轨迹）上算 NAC**，而平面波基组的软件在这些体系上做不了。
+
+核心是给 overlap 矩阵夹上 cross-time 的 AO 重叠：
 
 $$\langle \psi_i(t) \mid \psi_j(t+\Delta t) \rangle = C_i^\dagger S_{\text{cross}} C_j$$
 
+为什么必须是"cross-time"而不是单帧的 $S$、为什么平面波基组失效、S 矩阵与 Löwdin 正交化的关系、相位为什么必须修——见 **[cp2k/variable-cell-nac.md](cp2k/variable-cell-nac.md)**。
+
 | 文件 | 作用 |
 | --- | --- |
-| `cp2k_gaussian_nac_parallel.py` | 高斯基 time-overlap NAC 主程序，含 V/C 分块 gauge 搬运、MO 相位对齐、活性窗检查 |
+| `cp2k_gaussian_nac_parallel.py` | 高斯基 time-overlap NAC 主程序，含合并体系构造、V/C 分块 gauge 搬运、MO 相位对齐、活性窗检查 |
 | `cp2k_nac_parallel.sh` | SLURM 驱动脚本，逐帧对提交作业并缓存结果 |
 | `input.inp` | CP2K 模板输入（`RUN_TYPE ENERGY`，通过 `&PRINT / &AO_MATRICES` 输出 AO 重叠矩阵供脚本解析） |
+| `variable-cell-nac.md` | 变胞 NAC 的原理说明：局域基组 vs 平面波基组、S 矩阵、cross-time 重叠、相位修正 |
 
 **依赖**：Python 3 + NumPy；CP2K 需开启 `&AO_MATRICES` 打印重叠矩阵。
 
