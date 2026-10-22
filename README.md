@@ -88,7 +88,7 @@ sbatch cp2k_nac_parallel.sh
 - **本地（推荐，公式排版最稳）**：用支持 MathJax/KaTeX 的编辑器打开，例如 VS Code + Markdown Preview Enhanced、Typora、Obsidian。
 
 ```bash
-git clone <本仓库地址>
+git clone https://github.com/wkpahuwkp98/cp2k-nac-fssh.git
 ```
 
 ## 贡献
