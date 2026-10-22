@@ -95,6 +95,10 @@ git clone https://github.com/wkpahuwkp98/cp2k-nac-fssh.git
 
 欢迎提 Issue 指正推导错误、补充 PYXAID 实际参数经验，或补全"六、全电子校正"一节。提交 PR 前请保持公式编号与正文引用一致。
 
+## 相关仓库
+
+- **[gw-bse-wannier-lrtddft](https://github.com/wkpahuwkp98/gw-bse-wannier-lrtddft)** —— 激子与激发态的多体理论中文讲义：从二次量子化到 GW-BSE 与 TDDFT，含 Wannier 方程、GW 近似、Bethe–Salpeter 方程与 OT-SRSH。本仓库讲"激发态怎么随时间演化"，那边讲"激发态本身怎么描述"，可对照阅读。
+
 ## 许可
 
 本仓库按内容类型分别授权：
