@@ -46,6 +46,7 @@
 │   ├── cp2k_nac_parallel.sh
 │   ├── input.inp
 │   ├── variable-cell-nac.md  # 变胞 NAC 的原理与实现要点
+│   ├── workflow.md   # 从轨迹到 NAC 的端到端流程
 │   ├── LICENSE   # 代码的 Apache-2.0 许可全文
 │   └── NOTICE    # 第三方来源与修改说明（nano-qmflows）
 └── .gitignore    # 排除本地 PDF 参考资料、Python 缓存与运行产物
@@ -68,7 +69,10 @@ $$\langle \psi_i(t) \mid \psi_j(t+\Delta t) \rangle = C_i^\dagger S_{\text{cross
 | `cp2k_gaussian_nac_parallel.py` | 高斯基 time-overlap NAC 主程序，含合并体系构造、V/C 分块 gauge 搬运、MO 相位对齐、活性窗检查 |
 | `cp2k_nac_parallel.sh` | SLURM 驱动脚本，逐帧对提交作业并缓存结果 |
 | `input.inp` | CP2K 模板输入（`RUN_TYPE ENERGY`，通过 `&PRINT / &AO_MATRICES` 输出 AO 重叠矩阵供脚本解析） |
-| `variable-cell-nac.md` | 变胞 NAC 的原理说明：局域基组 vs 平面波基组、S 矩阵、cross-time 重叠、相位修正 |
+| `variable-cell-nac.md` | 变胞 NAC 的原理说明：局域基组 vs 平面波基组、S 矩阵与 Löwdin 正交化（含推导附录）、cross-time 重叠、相位修正 |
+| `workflow.md` | 从轨迹到 NAC 的端到端流程：增强采样（metaD）→ 路径采样（TPS）→ 机器学习势训练数据配平 → CP2K 逐帧计算 |
+
+**不知道怎么拿到轨迹？** 先看 [cp2k/workflow.md](cp2k/workflow.md)：它解释了为什么普通 MD 到不了稀有事件、metaD 与 TPS 各解决什么问题、机器学习势的训练数据为什么会在鞍点区域失效，以及变胞体系里 TPS 打靶必须注意的时间反演细节。
 
 **依赖**：Python 3 + NumPy；CP2K 需开启 `&AO_MATRICES` 打印重叠矩阵。
 

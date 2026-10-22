@@ -89,6 +89,8 @@ $$
 
 结果与直接夹 S 一致。**实际计算中不需要真的求出 $S^{-1/2}$、也不需要知道 Löwdin 基长什么样**，只要 $S$ 和原始系数 $\mathbf{c}$ 就够。这既省事，也避免了 $S^{-1/2}$ 在近线性相关基组下的数值不稳定。
 
+完整的推导（正交性证明、系数变换、与基组无关性的说明、数值注意）见文末**附录 A**。
+
 ## 6. 必须用 cross-time 的 S，不能用单帧 S
 
 这是最容易出错的一步。NAC 需要的是
@@ -157,6 +159,149 @@ $$
 - **BSSE**：两帧基组重叠时存在基组叠加误差，跨时重叠在原子间距很近时需留意。
 - **合并体系的晶胞选择**：见 §6，是显式近似，用 `--cell-choice all` 量化。
 - **计算成本**：合并体系 SCF 是瓶颈；脚本按帧对缓存结果，避免重复计算。
+
+---
+
+# 附录 A：Löwdin 正交化与 S 矩阵的推导
+
+## A.1 S 矩阵的定义与性质
+
+给定一组非正交的实基函数 $\{\chi_\mu\}$，重叠矩阵定义为
+
+$$
+S_{\mu\nu} = \langle \chi_\mu \mid \chi_\nu \rangle = \int \chi_\mu^*(\mathbf{r})\,\chi_\nu(\mathbf{r})\,\mathrm{d}\mathbf{r}
+$$
+
+它有三个性质，后面都要用到：
+
+1. **对称**：$S = S^{\mathsf T}$（内积对称）
+2. **正定**：对任意非零系数向量 $\mathbf{v}$，$\mathbf{v}^{\mathsf T}S\mathbf{v} = \langle \sum_\mu v_\mu\chi_\mu \mid \sum_\nu v_\nu\chi_\nu\rangle > 0$。这正是"这组基函数线性无关"的等价表述。
+3. **度规**：它把系数空间的内积与函数空间的内积对应起来。对两个由同一组基展开的函数
+
+$$
+|\psi_i\rangle = \sum_\mu c_{\mu i}|\chi_\mu\rangle,\quad
+|\psi_j\rangle = \sum_\nu c_{\nu j}|\chi_\nu\rangle
+$$
+
+有
+
+$$
+\langle \psi_i \mid \psi_j \rangle = \sum_{\mu\nu} c_{\mu i}^* \langle \chi_\mu \mid \chi_\nu \rangle c_{\nu j} = \mathbf{c}_i^\dagger S\, \mathbf{c}_j
+$$
+
+这就是"不能直接写 $\mathbf{c}_i^\dagger\mathbf{c}_j$"的原因：$S \ne I$ 时，系数向量的普通点积不等于函数的内积。
+
+平面波基组之所以可以偷懒，是因为 $\langle e^{i\mathbf{G}\mathbf{r}}|e^{i\mathbf{G}'\mathbf{r}}\rangle \propto \delta_{\mathbf{G}\mathbf{G}'}$，$S$ 就是单位阵，度规退化为欧氏度规。
+
+## A.2 广义本征值问题
+
+把 $\hat H$ 在同一组基下展开，得到的是
+
+$$
+H\mathbf{c} = \varepsilon S\mathbf{c}, \qquad H_{\mu\nu} = \langle \chi_\mu | \hat H | \chi_\nu \rangle
+$$
+
+因为 $S$ 正定，可以令 $\mathbf{c} = S^{-1/2}\mathbf{u}$，代入得
+
+$$
+H S^{-1/2}\mathbf{u} = \varepsilon S^{1/2}\mathbf{u}
+\;\Longrightarrow\;
+\underbrace{S^{-1/2} H S^{-1/2}}_{\tilde H}\,\mathbf{u} = \varepsilon\,\mathbf{u}
+$$
+
+于是问题化为对 $\tilde H$ 的普通本征值问题。注意 $\tilde H$ 仍是厄米的（$S^{-1/2}$ 厄米且与自身对易），所以本征值 $\varepsilon$ 仍为实数——**非正交基组并不破坏能量的实数性**，只是把求解过程变复杂了。
+
+## A.3 Löwdin 正交化
+
+思路是：用旧基组造一组新的、正交归一的基函数。
+
+$$
+\tilde\chi_\mu = \sum_\nu \left(S^{-1/2}\right)_{\nu\mu} \chi_\nu
+$$
+
+**正交归一性证明**：直接代入定义
+
+$$
+\langle \tilde\chi_\mu \mid \tilde\chi_\nu \rangle
+= \sum_{\alpha\beta} \left(S^{-1/2}\right)_{\alpha\mu}^* \underbrace{\langle \chi_\alpha \mid \chi_\beta\rangle}_{S_{\alpha\beta}} \left(S^{-1/2}\right)_{\beta\nu}
+$$
+
+$S$ 实对称，$S^{-1/2}$ 也实对称，所以
+
+$$
+= \sum_{\alpha\beta} \left(S^{-1/2}\right)_{\mu\alpha} S_{\alpha\beta} \left(S^{-1/2}\right)_{\beta\nu}
+= \left(S^{-1/2} S S^{-1/2}\right)_{\mu\nu}
+= \left(S^{-1/2} S^{1/2} S^{1/2} S^{-1/2}\right)_{\mu\nu}
+= \delta_{\mu\nu}
+$$
+
+即新基组的重叠矩阵是单位阵。这一步的关键是 $S$ 与 $S^{-1/2}$ 对易——它们是同一个矩阵的函数，因此可以自由合并指数。
+
+## A.4 系数如何变换
+
+同一个态在两套基下展开：
+
+$$
+|\psi_i\rangle = \sum_\mu c_{\mu i}|\chi_\mu\rangle = \sum_\mu \tilde c_{\mu i}|\tilde\chi_\mu\rangle
+$$
+
+把 $\tilde\chi_\mu$ 的定义代回去：
+
+$$
+\sum_\mu \tilde c_{\mu i}\sum_\nu \left(S^{-1/2}\right)_{\nu\mu}\chi_\nu
+= \sum_\nu \Big(\sum_\mu \left(S^{-1/2}\right)_{\nu\mu}\tilde c_{\mu i}\Big)\chi_\nu
+$$
+
+与左边逐项比较（基函数线性无关，系数唯一）：
+
+$$
+c_{\nu i} = \sum_\mu \left(S^{-1/2}\right)_{\nu\mu}\tilde c_{\mu i}
+\;\Longrightarrow\;
+\tilde{\mathbf{c}}_i = S^{1/2}\mathbf{c}_i
+$$
+
+## A.5 关键结论：重叠与是否正交化无关
+
+在新基下重叠矩阵是单位阵，所以重叠可以直接用系数点积：
+
+$$
+\langle \psi_i \mid \psi_j\rangle
+= \tilde{\mathbf{c}}_i^\dagger \tilde{\mathbf{c}}_j
+= \left(S^{1/2}\mathbf{c}_i\right)^\dagger \left(S^{1/2}\mathbf{c}_j\right)
+= \mathbf{c}_i^\dagger S^{1/2} S^{1/2} \mathbf{c}_j
+= \mathbf{c}_i^\dagger S\,\mathbf{c}_j
+$$
+
+**结果与 §A.1 直接夹 $S$ 完全一致。** 这说明：
+
+- 正交化只是**推导工具**，不是必须执行的步骤；
+- 实际计算只需要 $S$ 和原始系数 $\mathbf{c}$，**不需要求出 $S^{-1/2}$，也不需要知道 Löwdin 基函数的显式形式**；
+- 因此也不受 $S^{-1/2}$ 数值稳定性的拖累（见 A.7）。
+
+## A.6 推广到 cross-time
+
+NAC 需要的是两帧之间的重叠，把上面的 $S$ 换成跨时的即可：
+
+$$
+S_{ij}(t,t+\Delta t) = \mathbf{c}_i(t)^\dagger\, S_{\text{cross}}\, \mathbf{c}_j(t+\Delta t),
+\qquad (S_{\text{cross}})_{\mu\nu} = \langle \chi_\mu(t) \mid \chi_\nu(t+\Delta t)\rangle
+$$
+
+注意此时 $S_{\text{cross}}$ **不是方阵的对称矩阵**（行属于帧 $t$ 的基组，列属于帧 $t+\Delta t$ 的基组），但两个基组的规模相同，所以它仍是 $n_{\text{ao}}\times n_{\text{ao}}$ 的方阵，只是不满足 $S_{\text{cross}} = S_{\text{cross}}^{\mathsf T}$。这个不对称正是 NAC 的来源——若对称则 §1 的差分为零。
+
+## A.7 数值注意
+
+虽然不必显式求 $S^{-1/2}$，但 $S$ 的条件数仍然重要：
+
+- 高斯基在弥散函数较多、或两帧原子靠得很近时，$S$ 会出现接近 1 的本征值 → **近线性相关**。此时 $S$ 条件数变差，任何涉及 $S^{-1}$ 的操作都会放大误差。
+- 本仓库的做法是绕开 $S^{-1}$：只用 $S$ 本身做双线性型 $\mathbf{c}^\dagger S\mathbf{c}$，不做求逆。这也是 §5 结论的实际价值。
+- 一个实用的健康检查：单帧情形下应有 $\lVert C^\dagger S C - I\rVert \approx 0$。若明显偏离，说明读入的 $S$ 与波函数不匹配（例如取错了 `&AO_MATRICES` 的段落、或帧的原子顺序不一致）。脚本里的 `diag_overlap_health()` 就是做这件事。
+
+## A.8 一个容易混淆的点
+
+"$S$ 是度规"这句话常被误解成"$S$ 描述了基函数之间的距离"。更准确的说法是：$S$ 定义了**系数空间上的内积**，$\langle \mathbf{u},\mathbf{v}\rangle_S = \mathbf{u}^\dagger S \mathbf{v}$。基函数本身是函数，没有"距离"可言；是系数向量需要借 $S$ 才能正确地对应回函数空间的内积。平面波情形 $S = I$，两种内积恰好重合，所以这个区别平时被掩盖了。
+
+---
 
 ## 延伸
 
