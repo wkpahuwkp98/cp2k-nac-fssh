@@ -111,6 +111,6 @@ git clone <本仓库地址>
 
 建议引用格式：
 
-> wkpahuwkp98. 非绝热载流子动力学理论计算方法[EB/OL]. GitHub, 2026. https://github.com/wkpahuwkp98/fssh-tutorial
+> wkpahuwkp98. 非绝热载流子动力学理论计算方法[EB/OL]. GitHub, 2026. https://github.com/wkpahuwkp98/cp2k-nac-fssh
 
 **代码部分**采用 Apache-2.0，原因是 `cp2k/cp2k_gaussian_nac_parallel.py` 中 NAC→Hvib 的处理链改编自 [nano-qmflows](https://github.com/SCM-NV/nano-qmflows)（Copyright 2022 Netherlands eScience Center, Vrije Universiteit Amsterdam，Apache-2.0）。上游要求保留版权声明、附许可全文并声明修改，这些义务分别由 `cp2k/LICENSE`、`cp2k/NOTICE` 与文件头的许可声明承担。
